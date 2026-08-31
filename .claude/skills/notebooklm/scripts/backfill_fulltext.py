@@ -65,8 +65,6 @@ async def fetch_and_write(client, sem, notebook_id, source, sources_dir):
 
 
 async def main():
-    from notebooklm import NotebookLMClient
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--notebook", required=True)
     parser.add_argument("--slug", required=True)
@@ -74,6 +72,8 @@ async def main():
     parser.add_argument("--concurrency", type=int, default=10)
     parser.add_argument("--sources-json", help="Path to source list JSON (skips API call)")
     args = parser.parse_args()
+
+    from notebooklm import NotebookLMClient
 
     vault = Path(args.vault)
     sources_dir = vault / "Notes/NotebookLM" / args.slug / "Sources"
