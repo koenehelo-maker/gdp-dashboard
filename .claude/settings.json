@@ -1,0 +1,27 @@
+{
+  "extraKnownMarketplaces": {
+    "humanizer": {
+      "source": { "source": "github", "repo": "blader/humanizer" }
+    },
+    "claude-video": {
+      "source": { "source": "github", "repo": "bradautomates/claude-video" }
+    },
+    "hyperframes": {
+      "source": { "source": "github", "repo": "heygen-com/hyperframes" }
+    }
+  },
+  "enabledPlugins": {
+    "humanizer@humanizer": true,
+    "watch@claude-video": true,
+    "hyperframes@hyperframes": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-start.sh", "timeout": 300 }
+        ]
+      }
+    ]
+  }
+}
