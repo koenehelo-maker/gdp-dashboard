@@ -4,6 +4,8 @@
 
 Streamlit demo that charts World Bank GDP data. Entry point is `streamlit_app.py`, data is `data/gdp_data.csv`, dependencies are `streamlit` and `pandas` (`requirements.txt`). Run with `streamlit run streamlit_app.py`.
 
+Tests in `tests/` use Streamlit's `AppTest` to run the app headless: `pip install -r requirements.txt pytest`, then `pytest -q`. `.github/workflows/ci.yml` runs them on every pull request and on pushes to `main`.
+
 ## Claude Code tooling
 
 Cloud sessions start in a fresh container. Anything installed by hand (plugins, skills, CLI tools) is lost when the container is reclaimed. Only what is committed to this repo persists.
