@@ -25,6 +25,7 @@ Cloud sessions start in a fresh container. Anything installed by hand (plugins, 
 | gstack | Not a plugin; `./setup` takes minutes. Browser skills fail in cloud containers. | Install on a local machine. Useful subset: `/office-hours`, `/plan-ceo-review`, `/plan-eng-review`, `/spec`, `/retro`, `/investigate`. |
 | Last 30 Days | Can read browser cookies; the consent gate is enforced by the prompt, not the code | Decline cookie access on work machines |
 | Remotion | Company licence required for organisations with more than 3 employees | Do not use for Telkom work without a licence |
+| prompts.chat (`f/prompts.chat`) | Plugin files scan clean, but its `skill-lookup` skill installs user-submitted skills into `.claude/skills/` without a scan, and `improve_prompt` sends prompt text to the prompts.chat server, which calls OpenAI. The proxy blocks `prompts.chat`, so the MCP server cannot connect in cloud sessions. | Browse the site or the CC0 `prompts.csv` in the repo instead. Do not send Telkom content to `improve_prompt`. |
 
 ### Rules learned
 
