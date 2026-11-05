@@ -6,7 +6,9 @@ Streamlit demo that charts World Bank GDP data. Entry point is `streamlit_app.py
 
 `.github/CODEOWNERS` assigns every file to `@koenehelo-maker`. It previously named `@streamlit/community-cloud`, left over from the Streamlit template; that was changed in #8. GitHub never asks a PR's author for review, so this only routes reviews when someone else opens a PR or branch protection requires code-owner review.
 
-CI (`.github/workflows/ci.yml`) runs on every PR and push to `main`, on Python 3.11 and 3.13. It runs `pytest tests`, which executes the app headlessly with Streamlit's `AppTest` and fails on any exception, then starts `streamlit run` and checks `/_stcore/health`. Run the tests locally with `pip install -r requirements.txt pytest && pytest tests`. `requirements.txt` is unpinned, so a new Streamlit or pandas release can turn CI red without any change here.
+CI (`.github/workflows/ci.yml`) runs on every PR and push to `main`, on Python 3.11 and 3.13. It runs `pytest tests`, which executes the app headlessly with Streamlit's `AppTest` and fails on any exception, then starts `streamlit run` and checks `/_stcore/health`. Run the tests locally with `pip install -r requirements.txt pytest==9.2.0 && pytest tests`.
+
+`requirements.txt` pins `streamlit==1.66.1` and `pandas==3.1.1`; CI pins `pytest==9.2.0`. Only these direct dependencies are pinned. Their own dependencies (numpy, pyarrow, altair and others) still resolve to the newest compatible release, so CI can still break without a change here, just less often. To upgrade, bump a version, run the tests on Python 3.11 and 3.13, and let CI confirm.
 
 ## Claude Code tooling
 
