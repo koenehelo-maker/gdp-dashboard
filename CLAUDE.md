@@ -16,6 +16,8 @@ uv pip compile requirements.in --universal --python-version 3.11 -o requirements
 
 Commit both files. CI's "Lock file in sync" job re-runs that command and fails if `requirements.txt` changes. CI pins `pytest==9.2.0` separately. Streamlit Community Cloud, the devcontainer and the README all install from `requirements.txt`, so they get the locked versions.
 
+Dependabot (`.github/dependabot.yml`) opens update PRs every Monday 06:00 SAST for Python packages, grouping minor and patch bumps into one PR, and monthly for GitHub Actions. Dependabot's support for a `uv pip compile` lock is not documented, so treat each Python PR with care: if "Lock file in sync" fails, check out the branch, regenerate the lock with the command above (adding `--upgrade-package <name>`), and push. Security alerts and security-update PRs are separate repository settings (Settings > Code security).
+
 ## Claude Code tooling
 
 Cloud sessions start in a fresh container. Anything installed by hand (plugins, skills, CLI tools) is lost when the container is reclaimed. Only what is committed to this repo persists.

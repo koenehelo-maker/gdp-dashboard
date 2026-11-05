@@ -1,0 +1,33 @@
+# Dependabot version updates. Security updates are a separate repository
+# setting (Settings > Code security > Dependabot security updates).
+version: 2
+updates:
+  # Python packages: requirements.in (direct) and the uv-compiled
+  # requirements.txt lock. CI's "Lock file in sync" job fails any update
+  # that leaves the two files out of step.
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Africa/Johannesburg
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for all minor and patch bumps; major bumps get their own PR.
+      python-minor-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: deps
+
+  # Actions used in .github/workflows (checkout, setup-python).
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      timezone: Africa/Johannesburg
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: ci
