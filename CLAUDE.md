@@ -4,7 +4,9 @@
 
 Streamlit demo that charts World Bank GDP data. Entry point is `streamlit_app.py`, data is `data/gdp_data.csv`, dependencies are `streamlit` and `pandas` (`requirements.txt`). Run with `streamlit run streamlit_app.py`.
 
-`.github/CODEOWNERS` assigns every file to `@koenehelo-maker`. It previously named `@streamlit/community-cloud`, left over from the Streamlit template; that was changed in #8. GitHub never asks a PR's author for review, so this only routes reviews when someone else opens a PR or branch protection requires code-owner review. The repo has no CI checks, so a clean merge state means no conflicts, not tested code.
+`.github/CODEOWNERS` assigns every file to `@koenehelo-maker`. It previously named `@streamlit/community-cloud`, left over from the Streamlit template; that was changed in #8. GitHub never asks a PR's author for review, so this only routes reviews when someone else opens a PR or branch protection requires code-owner review.
+
+CI (`.github/workflows/ci.yml`) runs on every PR and push to `main`, on Python 3.11 and 3.13. It runs `pytest tests`, which executes the app headlessly with Streamlit's `AppTest` and fails on any exception, then starts `streamlit run` and checks `/_stcore/health`. Run the tests locally with `pip install -r requirements.txt pytest && pytest tests`. `requirements.txt` is unpinned, so a new Streamlit or pandas release can turn CI red without any change here.
 
 ## Claude Code tooling
 
