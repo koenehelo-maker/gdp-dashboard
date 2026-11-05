@@ -4,6 +4,8 @@
 
 Streamlit demo that charts World Bank GDP data. Entry point is `streamlit_app.py`, data is `data/gdp_data.csv`, dependencies are `streamlit` and `pandas` (`requirements.txt`). Run with `streamlit run streamlit_app.py`.
 
+`.github/CODEOWNERS` assigns every file to `@koenehelo-maker`. It previously named `@streamlit/community-cloud`, left over from the Streamlit template; that was changed in #8. GitHub never asks a PR's author for review, so this only routes reviews when someone else opens a PR or branch protection requires code-owner review. The repo has no CI checks, so a clean merge state means no conflicts, not tested code.
+
 ## Claude Code tooling
 
 Cloud sessions start in a fresh container. Anything installed by hand (plugins, skills, CLI tools) is lost when the container is reclaimed. Only what is committed to this repo persists.
