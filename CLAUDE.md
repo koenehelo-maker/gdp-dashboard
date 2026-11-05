@@ -2,13 +2,19 @@
 
 ## Project
 
-Streamlit demo that charts World Bank GDP data. Entry point is `streamlit_app.py`, data is `data/gdp_data.csv`, dependencies are `streamlit` and `pandas` (`requirements.txt`). Run with `streamlit run streamlit_app.py`.
+Streamlit demo that charts World Bank GDP data. Entry point is `streamlit_app.py`, data is `data/gdp_data.csv`, direct dependencies are `streamlit` and `pandas` (`requirements.in`, locked in `requirements.txt`). Run with `streamlit run streamlit_app.py`.
 
 `.github/CODEOWNERS` assigns every file to `@koenehelo-maker`. It previously named `@streamlit/community-cloud`, left over from the Streamlit template; that was changed in #8. GitHub never asks a PR's author for review, so this only routes reviews when someone else opens a PR or branch protection requires code-owner review.
 
 CI (`.github/workflows/ci.yml`) runs on every PR and push to `main`, on Python 3.11 and 3.13. It runs `pytest tests`, which executes the app headlessly with Streamlit's `AppTest` and fails on any exception, then starts `streamlit run` and checks `/_stcore/health`. Run the tests locally with `pip install -r requirements.txt pytest==9.2.0 && pytest tests`.
 
-`requirements.txt` pins `streamlit==1.66.1` and `pandas==3.1.1`; CI pins `pytest==9.2.0`. Only these direct dependencies are pinned. Their own dependencies (numpy, pyarrow, altair and others) still resolve to the newest compatible release, so CI can still break without a change here, just less often. To upgrade, bump a version, run the tests on Python 3.11 and 3.13, and let CI confirm.
+Dependencies are locked. `requirements.in` lists the direct dependencies (`streamlit==1.66.1`, `pandas==3.1.1`). `requirements.txt` is generated from it by `uv pip compile` and pins all 34 packages, including transitive ones like numpy and pyarrow, with markers where Python 3.11 and 3.12+ need different versions. Do not edit `requirements.txt` by hand. To change or upgrade a dependency, edit `requirements.in` (or pass `--upgrade-package <name>` to upgrade only a transitive dependency), then run:
+
+```bash
+uv pip compile requirements.in --universal --python-version 3.11 -o requirements.txt
+```
+
+Commit both files. CI's "Lock file in sync" job re-runs that command and fails if `requirements.txt` changes. CI pins `pytest==9.2.0` separately. Streamlit Community Cloud, the devcontainer and the README all install from `requirements.txt`, so they get the locked versions.
 
 ## Claude Code tooling
 
