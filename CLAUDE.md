@@ -15,6 +15,7 @@ Cloud sessions start in a fresh container. Anything installed by hand (plugins, 
 | Humanizer (`blader/humanizer`) | Strip AI tells from prose | `/humanizer:humanizer` |
 | Watch (`bradautomates/claude-video`) | Frames + transcript from a video URL or file | Needs `ffmpeg` and `yt-dlp`; `.claude/hooks/session-start.sh` installs them in cloud sessions. YouTube also needs Deno, which is not installed. |
 | HyperFrames (`heygen-com/hyperframes`) | Code-built video | The claude.ai HyperFrames connector makes hosted HeyGen projects; the plugin writes local HTML. Pick one per job. |
+| Blender Skills (`arjun988/blender-skills` v1.3.0, commit `8f778d2`) | 94 Blender skills in `.claude/skills/` (MIT, licence in `LICENSE-blender-skills`) | Markdown only; skillspector rated all 94 SAFE. Built for Blender MCP, which needs Blender running locally, so in cloud sessions it gives guidance only. Its Windows-only `.mcp.json` was not copied. Delete `.claude/skills/` if the skill list crowds out other skills. |
 
 ### Deliberately not persisted
 
