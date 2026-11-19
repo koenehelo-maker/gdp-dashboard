@@ -20,20 +20,25 @@ Dependabot (`.github/dependabot.yml`) opens update PRs every Monday 06:00 SAST f
 
 ## Claude Code tooling
 
-Cloud sessions start in a fresh container. Anything installed by hand (plugins, skills, CLI tools) is lost when the container is reclaimed. Only what is committed to this repo persists.
+Cloud sessions start in a fresh container. Anything installed by hand (plugins, skills, CLI tools) is lost when the container is reclaimed. Only what is committed to this repo, or turned on in your claude.ai account, persists.
 
-### Active (persisted via `.claude/settings.json`)
+### Active
 
-| Plugin | Use | Notes |
-|---|---|---|
-| Humanizer (`blader/humanizer`) | Strip AI tells from prose | `/humanizer:humanizer` |
-| Watch (`bradautomates/claude-video`) | Frames + transcript from a video URL or file | Needs `ffmpeg` and `yt-dlp`; `.claude/hooks/session-start.sh` installs them in cloud sessions. YouTube also needs Deno, which is not installed. |
-| HyperFrames (`heygen-com/hyperframes`) | Code-built video | The claude.ai HyperFrames connector makes hosted HeyGen projects; the plugin writes local HTML. Pick one per job. |
+None. Cloud sessions do not install plugins that a repo declares in `.claude/settings.json` (`extraKnownMarketplaces` and `enabledPlugins`). The [cloud-environments docs](https://code.claude.com/docs/en/cloud-environments#what-carries-over-from-your-setup) say so, and a check on 19 Nov 2026 confirmed it: no marketplace was registered and no plugin was installed. What does load in cloud sessions:
+
+| Source | Loads in cloud sessions? |
+|---|---|
+| Plugins and skills turned on in your claude.ai account | Yes (synced) |
+| Skills committed under `.claude/skills/` | Yes |
+| `extraKnownMarketplaces` / `enabledPlugins` in `.claude/settings.json` | No. On a local machine they install only after you trust the folder. |
 
 ### Deliberately not persisted
 
 | Tool | Why | To use anyway |
 |---|---|---|
+| Humanizer (`blader/humanizer`) | Declared in `.claude/settings.json` from #3 (29 Sep 2026) to 19 Nov 2026, but never loaded in a cloud session (see "Active" above). | Add it to your claude.ai account, if claude.ai accepts it, so it syncs into cloud sessions. If not, vendor its `SKILL.md` into `.claude/skills/` after a licence check and a skillspector scan. On a local machine: `/plugin marketplace add blader/humanizer`. |
+| Watch (`bradautomates/claude-video`) | Same as Humanizer. It also needs `ffmpeg` and `yt-dlp`; the SessionStart hook that installed them (`.claude/hooks/session-start.sh`) was removed with it. YouTube also needs Deno. | On a local machine: `/plugin marketplace add bradautomates/claude-video`, then install `ffmpeg` and `yt-dlp`. |
+| HyperFrames plugin (`heygen-com/hyperframes`) | Same as Humanizer. The claude.ai HyperFrames connector does load in cloud sessions, but from a CLI agent its `compose` and `render_video` tools are disabled. | On a local machine: `/plugin marketplace add heygen-com/hyperframes`, or `npx skills add heygen-com/hyperframes` (see the Skills CLI row). |
 | Superpowers | Software-engineering workflow; loads into every session and clashes with gstack and the document skills. Code scans clean; the risks are behavioural (see the note below the table). | `/plugin marketplace add obra/superpowers-marketplace`, then install `superpowers@superpowers-marketplace`. Use for one session of code work only; never with Telkom content loaded. |
 | Impeccable (`pbakaus/impeccable`, Apache-2.0, checked at v4.8.1, Nov 2026) | Built for web front-end files (HTML, CSS, JSX); this app is one Streamlit Python file, so the detector and hook would have little to check. The skill runs a compiled engine that downloads to `~/.impeccable/bin/` (verified against committed digests), which a cloud container loses. It fetches design directions from impeccable.style even with telemetry off. The plugin manifest declares no hooks; `npx impeccable install` writes the edit and Stop hook. Live mode can run `claude --permission-mode bypassPermissions` on the checkout. | For a real web front end, on a local machine: `/plugin marketplace add pbakaus/impeccable`, or try it hook-free as a CI check with `npx impeccable detect src/ --github`. Turn telemetry off (`DO_NOT_TRACK=1`) and set `IMPECCABLE_LIVE_COPY_AGENT=off`. Read the hook script before installing on a work machine. |
 | gstack | Not a plugin; `./setup` takes minutes. Browser skills fail in cloud containers. | Install on a local machine. Useful subset: `/office-hours`, `/plan-ceo-review`, `/plan-eng-review`, `/spec`, `/retro`, `/investigate`. |
@@ -58,6 +63,7 @@ Cloud sessions start in a fresh container. Anything installed by hand (plugins, 
 - Scan third-party skills before installing: `uv tool install git+https://github.com/NVIDIA/skillspector.git`, then `skillspector scan <dir> --recursive --no-llm`. The static scan is noisy (most "DO_NOT_INSTALL" ratings come from API-key reads in tests and docs), so read the high-severity findings instead of trusting the rating.
 - Do not add gstack's suggested CLAUDE.md section ("use /browse for all web browsing, never use Chrome tools"). It routes all browsing through a tool that does not work here.
 - Do not run gstack team mode (`./setup --team`); it commits gstack into the repo as a requirement.
+- Repo-declared plugins (`extraKnownMarketplaces`, `enabledPlugins`) do not load in cloud sessions. Use claude.ai account plugins or committed `.claude/skills/` instead.
 - Superpowers is on Anthropic's official marketplace (`superpowers@claude-plugins-official`), but that marketplace is not registered in cloud containers.
 - `/reload-plugins` does not work over a remote connection. Start a new session to load newly installed plugins.
 - Installing third-party plugins is blocked by the permission classifier unless the user explicitly approves it in the conversation.
